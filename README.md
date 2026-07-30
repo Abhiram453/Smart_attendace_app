@@ -2,12 +2,20 @@
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.44.8-blue.svg)
 ![Dart](https://img.shields.io/badge/Dart-3.11.0-blue.svg)
+[![Live Web Demo](https://img.shields.io/badge/Live%20Demo-classtrackkk.netlify.app-brightgreen.svg)](https://classtrackkk.netlify.app/)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 ![AI](https://img.shields.io/badge/Engine-Rule--Based%20AI-purple.svg)
+
+> 🚀 **Live Web Application Demo**: [https://classtrackkk.netlify.app/](https://classtrackkk.netlify.app/)
 
 **Smart Attendance App** is an intelligent, cross-platform mobile and web application built with Flutter and Firebase that streamlines classroom attendance management through high-speed dynamic QR code generation, real-time scanning, role-based authentication, and a built-in Rule-Based AI Engine. The AI engine continuously analyzes student attendance trends to automatically alert students at risk of falling below attendance thresholds (<75%), award streak badges for top performers, and provide teachers with data-driven engagement insights and interactive analytics charts.
 
 ---
+
+## 🌐 Live Application URL
+
+- 🔗 **Web Demo**: **[https://classtrackkk.netlify.app/](https://classtrackkk.netlify.app/)**
+- 📦 **GitHub Repository**: **[https://github.com/Abhiram453/Smart_attendace_app.git](https://github.com/Abhiram453/Smart_attendace_app.git)**
 
 ## 🚀 Key Features
 
