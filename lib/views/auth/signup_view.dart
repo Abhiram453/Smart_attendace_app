@@ -41,6 +41,30 @@ class _SignUpViewState extends State<SignUpView> {
     super.dispose();
   }
 
+  void _handleGoogleSignUp() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final success = await authProvider.signInWithGoogle(role: _selectedRole);
+
+    if (mounted && success) {
+      final user = authProvider.currentUser!;
+      if (user.role == UserRole.teacher) {
+        Provider.of<ClassProvider>(context, listen: false).fetchTeacherClasses(user.uid);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const TeacherDashboardView()),
+          (route) => false,
+        );
+      } else {
+        Provider.of<ClassProvider>(context, listen: false).fetchStudentClasses(user.uid);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const StudentDashboardView()),
+          (route) => false,
+        );
+      }
+    }
+  }
+
   void _handleSignUp() async {
     if (_formKey.currentState!.validate()) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -247,6 +271,12 @@ class _SignUpViewState extends State<SignUpView> {
                       icon: Icons.person_add_alt_1_rounded,
                       isLoading: authProvider.isLoading,
                       onPressed: _handleSignUp,
+                    ),
+                    const SizedBox(height: 14),
+                    OutlinedButton.icon(
+                      onPressed: _handleGoogleSignUp,
+                      icon: const Icon(Icons.g_mobiledata_rounded, size: 28),
+                      label: const Text('Sign up with Google'),
                     ),
 
                     const SizedBox(height: 16),
