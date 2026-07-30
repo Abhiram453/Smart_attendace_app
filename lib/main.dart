@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'core/theme/app_theme.dart';
 import 'providers/ai_insight_provider.dart';
 import 'providers/attendance_provider.dart';
@@ -8,8 +9,15 @@ import 'providers/class_provider.dart';
 import 'providers/theme_provider.dart';
 import 'views/splash/splash_view.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await Firebase.initializeApp();
+  } catch (_) {
+    // Graceful fallback if Firebase options file is being configured locally
+  }
+
   runApp(
     MultiProvider(
       providers: [
