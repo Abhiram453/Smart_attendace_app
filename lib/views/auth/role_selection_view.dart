@@ -3,7 +3,11 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/responsive_layout.dart';
 import '../../data/models/user_model.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/class_provider.dart';
 import '../../providers/theme_provider.dart';
+import '../student/student_dashboard_view.dart';
+import '../teacher/teacher_dashboard_view.dart';
 import '../widgets/app_illustration.dart';
 import 'login_view.dart';
 
@@ -75,7 +79,78 @@ class RoleSelectionView extends StatelessWidget {
             illustration: IllustrationType.roleStudent,
             gradient: AppColors.successGradient,
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 24),
+          _buildQuickDemoSection(context),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  void _handleQuickDemo(BuildContext context, UserRole role) async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final classProvider = Provider.of<ClassProvider>(context, listen: false);
+
+    if (role == UserRole.teacher) {
+      await authProvider.signIn(email: 'sarah@university.edu', password: 'password123');
+      if (context.mounted) {
+        classProvider.fetchTeacherClasses(authProvider.currentUser!.uid);
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const TeacherDashboardView()));
+      }
+    } else {
+      await authProvider.signIn(email: 'alex@student.edu', password: 'password123');
+      if (context.mounted) {
+        classProvider.fetchStudentClasses(authProvider.currentUser!.uid);
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const StudentDashboardView()));
+      }
+    }
+  }
+
+  Widget _buildQuickDemoSection(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        children: [
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.flash_on_rounded, color: AppColors.primary, size: 20),
+              SizedBox(width: 6),
+              Text(
+                'Instant Demo Mode (Quick Explore)',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 12,
+            runSpacing: 10,
+            alignment: WrapAlignment.center,
+            children: [
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+                ),
+                onPressed: () => _handleQuickDemo(context, UserRole.teacher),
+                icon: const Icon(Icons.school_rounded, size: 18),
+                label: const Text('Try Teacher Demo'),
+              ),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: AppColors.secondary.withValues(alpha: 0.15),
+                ),
+                onPressed: () => _handleQuickDemo(context, UserRole.student),
+                icon: const Icon(Icons.person_rounded, size: 18),
+                label: const Text('Try Student Demo'),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -101,7 +176,7 @@ class RoleSelectionView extends StatelessWidget {
               'Select your workspace role to initialize your session',
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
-            const SizedBox(height: 48),
+            const SizedBox(height: 36),
             Row(
               children: [
                 Expanded(
@@ -127,6 +202,8 @@ class RoleSelectionView extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 32),
+            _buildQuickDemoSection(context),
           ],
         ),
       ),
