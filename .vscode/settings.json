@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "C:/Users/prasa/OneDrive/Desktop/New folder/windows"
+    "cmake.sourceDirectory": "C:/Users/prasa/OneDrive/Desktop/New folder/windows",
+    "cmake.ignoreCMakeListsMissing": true
 }
