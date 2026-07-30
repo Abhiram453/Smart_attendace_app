@@ -154,9 +154,9 @@ class _SessionQRViewState extends State<SessionQRView> {
                   child: Column(
                     children: [
                       QrImageView(
-                        data: widget.session.qrPayload,
+                        data: widget.session.qrPayload.isNotEmpty ? widget.session.qrPayload : 'SMART_ATTENDANCE_ACTIVE_SESSION',
                         version: QrVersions.auto,
-                        size: 260.0,
+                        size: 240.0,
                         backgroundColor: Colors.white,
                         eyeStyle: const QrEyeStyle(
                           eyeShape: QrEyeShape.square,
