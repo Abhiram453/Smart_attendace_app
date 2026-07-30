@@ -58,8 +58,10 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.stitchBgDark,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Stack(
           children: [
@@ -108,13 +110,14 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
                               ),
                             ),
                           ),
-                          const SizedBox(height: 6),
-                          const Text(
-                            'AI-Powered Attendance Management',
+                          const SizedBox(height: 8),
+                          Text(
+                            'RULE-BASED AI ENGINE',
                             style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.darkTextSecondary,
-                              letterSpacing: 0.2,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 2.5,
+                              color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
                             ),
                           ),
                         ],
@@ -125,35 +128,46 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
               ),
             ),
 
-            // Instagram Style Footer Brand Tagline
-            const Positioned(
-              bottom: 30,
+            // Instagram Style Footer Brand Tag
+            Positioned(
+              bottom: 24,
               left: 0,
               right: 0,
-              child: Column(
-                children: [
-                  Text(
-                    'from',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                  SizedBox(height: 2),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.auto_awesome, size: 14, color: AppColors.primaryLight),
-                      SizedBox(width: 6),
-                      Text(
-                        'SMART ATTENDANCE AI',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 1.5,
-                        ),
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: Column(
+                  children: [
+                    Text(
+                      'from',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.grey[500] : Colors.grey[600],
+                        letterSpacing: 1.0,
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.psychology_rounded,
+                          size: 16,
+                          color: isDark ? AppColors.primaryLight : AppColors.primary,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          'SMART ATTENDANCE AI',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.5,
+                            color: isDark ? AppColors.darkText : AppColors.lightText,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
