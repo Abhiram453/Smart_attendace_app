@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/responsive_layout.dart';
 import '../../data/models/class_model.dart';
-import '../../data/models/session_model.dart';
 import '../../providers/ai_insight_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/class_provider.dart';
@@ -387,20 +386,12 @@ class _TeacherDashboardViewState extends State<TeacherDashboardView> {
                     icon: const Icon(Icons.qr_code_2_rounded, color: Colors.white, size: 20),
                     label: const Text('Start QR Session', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                     onPressed: () async {
-                      SessionModel? session = await classProvider.generateQRSession(cls.id);
-                      session ??= SessionModel(
-                        sessionId: 'ses_${DateTime.now().millisecondsSinceEpoch}',
-                        classId: cls.id,
-                        qrPayload: 'SMART_ATTENDANCE_${cls.id}_${DateTime.now().millisecondsSinceEpoch}',
-                        createdAt: DateTime.now(),
-                        expiresAt: DateTime.now().add(const Duration(minutes: 15)),
-                        isActive: true,
-                      );
+                      final session = await classProvider.generateQRSession(cls.id);
                       if (context.mounted) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => SessionQRView(targetClass: cls, session: session!),
+                            builder: (_) => SessionQRView(targetClass: cls, session: session),
                           ),
                         );
                       }
