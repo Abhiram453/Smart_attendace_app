@@ -88,44 +88,54 @@ class AuthService {
 
   // Firebase Google Sign-In Authentication
   Future<UserModel> signInWithGoogle({required UserRole role}) async {
-    await Future.delayed(const Duration(milliseconds: 600));
-
-    String name = 'Google User';
-    String email = 'user.google@domain.com';
-    String uid = 'google_${DateTime.now().millisecondsSinceEpoch}';
+    _initFirebase();
 
     try {
-      if (_googleSignIn != null && _firebaseAuth != null) {
-        final GoogleSignInAccount? googleUser = await _googleSignIn!.signIn();
-        if (googleUser != null) {
-          final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-          final OAuthCredential credential = GoogleAuthProvider.credential(
-            accessToken: googleAuth.accessToken,
-            idToken: googleAuth.idToken,
-          );
-          final UserCredential userCredential = await _firebaseAuth!.signInWithCredential(credential);
-          final User? user = userCredential.user;
-          if (user != null) {
-            name = user.displayName ?? name;
-            email = user.email ?? email;
-            uid = user.uid;
-          }
+      final googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+      );
+
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        throw Exception('Google Sign-In was cancelled.');
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      String uid = googleUser.id;
+      String name = googleUser.displayName ?? 'Google User';
+      String email = googleUser.email;
+
+      if (_firebaseAuth != null) {
+        final UserCredential userCredential = await _firebaseAuth!.signInWithCredential(credential);
+        if (userCredential.user != null) {
+          uid = userCredential.user!.uid;
+          name = userCredential.user!.displayName ?? name;
+          email = userCredential.user!.email ?? email;
         }
       }
+
+      final googleUserObj = UserModel(
+        uid: uid,
+        name: name,
+        email: email,
+        role: role,
+        studentId: role == UserRole.student ? 'STU-${email.split('@').first.toUpperCase()}' : null,
+      );
+
+      _currentUser = await _firestoreService.registerOrGetGoogleUser(googleUserObj);
+      return _currentUser!;
     } catch (e) {
-      // Fallback for desktop / web platform when Google OAuth client is offline
+      final msg = e.toString().replaceAll('Exception: ', '');
+      if (msg.contains('cancelled') || msg.contains('canceled')) {
+        throw Exception('Google Sign-In was cancelled.');
+      }
+      throw Exception('Google Sign-In failed: $msg. Please ensure Google Sign-In is enabled in Firebase Console.');
     }
-
-    final googleUserObj = UserModel(
-      uid: uid,
-      name: name,
-      email: email,
-      role: role,
-      studentId: role == UserRole.student ? 'STU-GGL-101' : null,
-    );
-
-    _currentUser = await _firestoreService.registerOrGetGoogleUser(googleUserObj);
-    return _currentUser!;
   }
 
   Future<void> logout() async {
