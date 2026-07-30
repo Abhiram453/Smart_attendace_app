@@ -60,6 +60,30 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
+  void _handleGoogleSignIn() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final success = await authProvider.signInWithGoogle(role: widget.selectedRole);
+
+    if (mounted && success) {
+      final user = authProvider.currentUser!;
+      if (user.role == UserRole.teacher) {
+        Provider.of<ClassProvider>(context, listen: false).fetchTeacherClasses(user.uid);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const TeacherDashboardView()),
+          (route) => false,
+        );
+      } else {
+        Provider.of<ClassProvider>(context, listen: false).fetchStudentClasses(user.uid);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const StudentDashboardView()),
+          (route) => false,
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
@@ -163,7 +187,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     const SizedBox(height: 16),
                     OutlinedButton.icon(
-                      onPressed: _handleLogin,
+                      onPressed: _handleGoogleSignIn,
                       icon: const Icon(Icons.g_mobiledata_rounded, size: 28),
                       label: const Text('Sign in with Google'),
                     ),

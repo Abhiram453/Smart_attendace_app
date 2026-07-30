@@ -70,6 +70,25 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // Firebase Google Sign In
+  Future<bool> signInWithGoogle({required UserRole role}) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      _currentUser = await _authService.signInWithGoogle(role: role);
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<void> logout() async {
     _isLoading = true;
     notifyListeners();
