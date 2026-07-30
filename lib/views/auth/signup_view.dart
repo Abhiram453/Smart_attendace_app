@@ -30,6 +30,9 @@ class _SignUpViewState extends State<SignUpView> {
   void initState() {
     super.initState();
     _selectedRole = widget.initialRole;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AuthProvider>(context, listen: false).clearError();
+    });
   }
 
   @override

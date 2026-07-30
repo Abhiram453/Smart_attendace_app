@@ -14,6 +14,11 @@ class AuthProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   bool get isAuthenticated => _currentUser != null;
 
+  void clearError() {
+    _errorMessage = null;
+    notifyListeners();
+  }
+
   // Real User Registration
   Future<bool> signUp({
     required String name,
