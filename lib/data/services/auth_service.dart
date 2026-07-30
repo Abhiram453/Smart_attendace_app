@@ -124,7 +124,7 @@ class AuthService {
       studentId: role == UserRole.student ? 'STU-GGL-101' : null,
     );
 
-    _currentUser = googleUserObj;
+    _currentUser = await _firestoreService.registerOrGetGoogleUser(googleUserObj);
     return _currentUser!;
   }
 

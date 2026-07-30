@@ -37,6 +37,16 @@ class FirestoreService {
     return user;
   }
 
+  // Register or Retrieve Google OAuth User
+  Future<UserModel> registerOrGetGoogleUser(UserModel user) async {
+    final existingIndex = _users.indexWhere((u) => u.email.toLowerCase() == user.email.toLowerCase());
+    if (existingIndex != -1) {
+      return _users[existingIndex];
+    }
+    _users.add(user);
+    return user;
+  }
+
   // Authenticate User
   Future<UserModel> authenticateUser(String email, String password) async {
     final userIndex = _users.indexWhere((u) => u.email.toLowerCase() == email.toLowerCase());
